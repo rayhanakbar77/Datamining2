@@ -11,7 +11,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
 dataset_dir = 'dataset'
-target_file = 'c:/Users/akbar/PrediksiKinerjaMhs/student-study-performance.zip'
+target_file = '/workspaces/Datamining2/student-study-performance.zip'
 
 # Debugging information
 st.write(f"Current working directory: {os.getcwd()}")
