@@ -9,27 +9,40 @@ Original file is located at
 
 import numpy as np
 import pandas as pd
+import io  # Add this import statement
 
 import seaborn as sns
 import matplotlib.pyplot as plt
+import streamlit as st
+from sklearn.model_selection import train_test_split
+
 
 import os,zipfile
 
 dataset_dir = 'dataset'
 
-target_file = 'student-study-performance.zip'
+target_file = 'c:/Users/akbar/PrediksiKinerjaMhs/study-performance.zip'
 
-extracting = zipfile.ZipFile(target_file, 'r')
-extracting.extractall(dataset_dir)
-extracting.close()
+# Check if the file exists
+if os.path.exists(target_file):
+    with zipfile.ZipFile(target_file, 'r') as extracting:
+        extracting.extractall(dataset_dir)
+else:
+    print(f"File not found: {target_file}")
 
 df = pd.read_csv(f'{dataset_dir}/study_performance.csv')
 
-df.head()
+# Display the dataframe
+st.write(df.head())
 
-df.info()
+# Display dataframe info
+buffer = io.StringIO()
+df.info(buf=buffer)
+info_str = buffer.getvalue()
+st.text(info_str)
 
-df.shape
+# Display dataframe shape
+st.write(f"Dataframe shape: {df.shape}")
 
 df.describe()
 
@@ -47,11 +60,13 @@ df = df.rename(columns = {df.columns[1] : 'group',
 df['total_score'] = df['math_score'] + df['reading_score'] + df['writing_score']
 df['mean_score'] = round(df['total_score'] / 3,1)
 
-df.head()
+# Display the updated dataframe
+st.write(df.head())
 
 numeric_cols = df.select_dtypes(include = ['int64','double']).columns
 object_cols = df.select_dtypes(exclude = ['int64','double']).columns
 
+# Plot histograms for numeric columns
 f, ax = plt.subplots(5,1, figsize=(15, 15))
 ax = ax.flatten()
 
@@ -60,8 +75,9 @@ for index, cols in enumerate(numeric_cols):
     ax[index].set_title(cols)
 
 plt.tight_layout()
-plt.show()
+st.pyplot(f)
 
+# Plot boxplots for numeric columns
 f, ax = plt.subplots(5,1, figsize=(15, 15))
 ax = ax.flatten()
 
@@ -70,8 +86,9 @@ for index, cols in enumerate(numeric_cols):
     ax[index].set_title(cols)
 
 plt.tight_layout()
-plt.show()
+st.pyplot(f)
 
+# Plot countplots for object columns
 f, ax = plt.subplots(5,1, figsize=(15, 20))
 ax = ax.flatten()
 
@@ -81,8 +98,9 @@ for index, cols in enumerate(object_cols):
 
 
 plt.tight_layout()
-plt.show()
+st.pyplot(f)
 
+# Plot boxplots for numeric columns by group
 f, ax = plt.subplots(5,1, figsize=(15, 30))
 ax = ax.flatten()
 
@@ -91,8 +109,9 @@ for index, cols in enumerate(numeric_cols):
     ax[index].set_title(cols)
 
 plt.tight_layout()
-plt.show()
+st.pyplot(f)
 
+# Plot boxplots for numeric columns by gender
 f, ax = plt.subplots(5,1, figsize=(15, 30))
 ax = ax.flatten()
 
@@ -101,10 +120,11 @@ for index, cols in enumerate(numeric_cols):
     ax[index].set_title(cols)
 
 plt.tight_layout()
-plt.show()
+st.pyplot(f)
 
+# Plot heatmap for numeric columns correlation
 sns.heatmap(df[numeric_cols].corr(),annot=True,cmap='Reds')
-plt.show()
+st.pyplot()
 
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
