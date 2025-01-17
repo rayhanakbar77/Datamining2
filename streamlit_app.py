@@ -11,7 +11,11 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 
 dataset_dir = 'dataset'
-target_file = 'c:/Users/akbar/PrediksiKinerjaMhs/student-study-performance.zip'
+target_file = '/workspaces/Datamining2/student-study-performance.zip'
+
+# Debugging information
+st.write(f"Current working directory: {os.getcwd()}")
+st.write(f"Files in the directory: {os.listdir(os.path.dirname(os.path.abspath(target_file)))}")
 
 # Check if the file exists
 if os.path.exists(target_file):
